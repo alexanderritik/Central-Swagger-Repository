@@ -10,7 +10,7 @@
 
 Managing API documentation across multiple microservices can be like herding cats - but not anymore! The Central Swagger Repository brings order to chaos by providing a sleek, centralized hub for all your Swagger documentation needs.
 
-![Architecture Overview](https://via.placeholder.com/800x400)
+[Please click for the demo](https://alexanderritik.github.io/Central-Swagger-Repository/)
 
 ## ✨ Key Features
 
