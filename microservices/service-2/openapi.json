@@ -1,0 +1,290 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Bookstore API",
+      "description": "An API for managing books and authors in a bookstore.",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "https://api.bookstore.com/v1"
+      }
+    ],
+    "paths": {
+      "/books": {
+        "get": {
+          "summary": "Get all books",
+          "operationId": "getBooks",
+          "tags": ["Books"],
+          "responses": {
+            "200": {
+              "description": "A list of books",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Book"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Add a new book",
+          "operationId": "addBook",
+          "tags": ["Books"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Book created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/books/{bookId}": {
+        "get": {
+          "summary": "Get a book by ID",
+          "operationId": "getBookById",
+          "tags": ["Books"],
+          "parameters": [
+            {
+              "name": "bookId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "A single book object",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Book not found"
+            }
+          }
+        },
+        "put": {
+          "summary": "Update a book",
+          "operationId": "updateBook",
+          "tags": ["Books"],
+          "parameters": [
+            {
+              "name": "bookId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Book updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Book not found"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a book",
+          "operationId": "deleteBook",
+          "tags": ["Books"],
+          "parameters": [
+            {
+              "name": "bookId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Book deleted successfully"
+            },
+            "404": {
+              "description": "Book not found"
+            }
+          }
+        }
+      },
+      "/authors": {
+        "get": {
+          "summary": "Get all authors",
+          "operationId": "getAuthors",
+          "tags": ["Authors"],
+          "responses": {
+            "200": {
+              "description": "A list of authors",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Author"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Add a new author",
+          "operationId": "addAuthor",
+          "tags": ["Authors"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Author created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Author"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/authors/{authorId}": {
+        "get": {
+          "summary": "Get an author by ID",
+          "operationId": "getAuthorById",
+          "tags": ["Authors"],
+          "parameters": [
+            {
+              "name": "authorId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "An author object",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Author"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Author not found"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Book": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The unique identifier of the book"
+            },
+            "title": {
+              "type": "string",
+              "description": "The title of the book"
+            },
+            "authorId": {
+              "type": "string",
+              "description": "The ID of the author of the book"
+            },
+            "isbn": {
+              "type": "string",
+              "description": "The ISBN of the book"
+            },
+            "publishedDate": {
+              "type": "string",
+              "format": "date",
+              "description": "The publication date of the book"
+            }
+          },
+          "required": ["id", "title", "authorId"]
+        },
+        "Author": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The unique identifier of the author"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the author"
+            },
+            "biography": {
+              "type": "string",
+              "description": "A short biography of the author"
+            }
+          },
+          "required": ["id", "name"]
+        }
+      }
+    }
+  }
+  

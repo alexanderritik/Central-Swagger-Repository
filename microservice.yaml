@@ -1,0 +1,35 @@
+name: Push Swagger to Central Repo
+
+on:
+  push:
+    branches:
+      - main
+    types:
+      - merged
+
+jobs:
+  push-swagger:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Microservice Code
+      uses: actions/checkout@v3
+
+    - name: Clone Central Swagger Repository
+      run: |
+        git clone https://github.com/your-org/central-swagger-storage.git central-repo
+
+    - name: Copy Swagger JSON
+      run: |
+        cp swagger.json central-repo/service1/
+
+    - name: Commit and Push to Central Repository
+      working-directory: central-repo
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+        git add service1/swagger.json
+        git commit -m "Update Swagger for Service 1"
+        git push origin main
