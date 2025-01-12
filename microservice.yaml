@@ -1,5 +1,6 @@
 name: Push Swagger to Central Repo
 
+# Trigger the workflow by pushing it to the main branch when a PR is merged.
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
     types:
       - merged
 
+# Define environment variables to store reusable values.
 env:
   CENTRAL_REPO: "alexanderritik-central-swagger-repository"
   MICROSERVICE_NAME: ${{ github.event.repository.name }}
@@ -16,22 +18,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Check out the code from the current microservice repository.
     - name: Checkout Microservice Repository
       uses: actions/checkout@v3
 
+    # Step 2: Clone the central Swagger repository where updates will be pushed.
     - name: Clone Central Swagger Repository
+      # Use a GitHub Marketplace action to clone the central repository.
       uses: repo-sync/github-sync@v3.5
       with:
+        # Reference the central repository using an environment variable.
         source_repo: ${{ env.CENTRAL_REPO }}
+        # Specify the branch of the central repository to work on.
         source_branch: main
+        # Destination directory is used to clone the central repository.
         destination: central-repo
+        # Use the automatically generated GitHub token for authentication.
+        # We can add  the microservice repositories or their associated teams as collaborators it will work for a private repository under one organization
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
+    # Step 3: Copy the Swagger (OpenAPI) file from the microservice repository into the central repository.
     - name: Copy Swagger File
       run: |
         mkdir -p central-repo/microservices/${{ env.MICROSERVICE_NAME }}
         cp openapi.json central-repo/microservices/${{ env.MICROSERVICE_NAME }}/openapi.json
 
+    # Step 4: Commit and push the changes to the central repository.
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
