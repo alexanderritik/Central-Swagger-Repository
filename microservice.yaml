@@ -7,29 +7,35 @@ on:
     types:
       - merged
 
+env:
+  CENTRAL_REPO: "alexanderritik-central-swagger-repository"
+  MICROSERVICE_NAME: ${{ github.event.repository.name }}
+
 jobs:
   push-swagger:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Microservice Code
+    - name: Checkout Microservice Repository
       uses: actions/checkout@v3
 
     - name: Clone Central Swagger Repository
-      run: |
-        git clone https://github.com/your-org/central-swagger-storage.git central-repo
+      uses: repo-sync/github-sync@v3.5
+      with:
+        source_repo: ${{ env.CENTRAL_REPO }}
+        source_branch: main
+        destination: central-repo
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Copy Swagger JSON
+    - name: Copy Swagger File
       run: |
-        cp swagger.json central-repo/service1/
+        mkdir -p central-repo/microservices/${{ env.MICROSERVICE_NAME }}
+        cp openapi.json central-repo/microservices/${{ env.MICROSERVICE_NAME }}/openapi.json
 
-    - name: Commit and Push to Central Repository
-      working-directory: central-repo
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config user.name "GitHub Action"
-        git config user.email "action@github.com"
-        git add service1/swagger.json
-        git commit -m "Update Swagger for Service 1"
-        git push origin main
+    - name: Commit and Push Changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Update Swagger for ${{ env.MICROSERVICE_NAME }} [Automated]"
+        branch: main
+        file_pattern: |
+          central-repo/microservices/${{ env.MICROSERVICE_NAME }}/openapi.json
