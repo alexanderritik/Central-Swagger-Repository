@@ -34,7 +34,7 @@ jobs:
         # Destination directory is used to clone the central repository.
         destination: central-repo
         # Use the automatically generated GitHub token for authentication.
-        # We can add  the microservice repositories or their associated teams as collaborators it will work for a private repository under one organization
+        # We can add  the microservice repositories or their associated teams as collaborators in the setting Central Swagger Repository. It will work for a private repository under one organization
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
     # Step 3: Copy the Swagger (OpenAPI) file from the microservice repository into the central repository.
