@@ -1,5 +1,6 @@
 name: Push Swagger to Central Repo
 
+# Trigger the workflow by pushing it to the main branch when a PR is merged.
 on:
   push:
     branches:
@@ -7,29 +8,46 @@ on:
     types:
       - merged
 
+# Define environment variables to store reusable values.
+env:
+  CENTRAL_REPO: "alexanderritik-central-swagger-repository"
+  MICROSERVICE_NAME: ${{ github.event.repository.name }}
+
 jobs:
   push-swagger:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Microservice Code
+    # Step 1: Check out the code from the current microservice repository.
+    - name: Checkout Microservice Repository
       uses: actions/checkout@v3
 
+    # Step 2: Clone the central Swagger repository where updates will be pushed.
     - name: Clone Central Swagger Repository
-      run: |
-        git clone https://github.com/your-org/central-swagger-storage.git central-repo
+      # Use a GitHub Marketplace action to clone the central repository.
+      uses: repo-sync/github-sync@v3.5
+      with:
+        # Reference the central repository using an environment variable.
+        source_repo: ${{ env.CENTRAL_REPO }}
+        # Specify the branch of the central repository to work on.
+        source_branch: main
+        # Destination directory is used to clone the central repository.
+        destination: central-repo
+        # Use the automatically generated GitHub token for authentication.
+        # We can add  the microservice repositories or their associated teams as collaborators in the setting Central Swagger Repository. It will work for a private repository under one organization
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Copy Swagger JSON
+    # Step 3: Copy the Swagger (OpenAPI) file from the microservice repository into the central repository.
+    - name: Copy Swagger File
       run: |
-        cp swagger.json central-repo/service1/
+        mkdir -p central-repo/microservices/${{ env.MICROSERVICE_NAME }}
+        cp openapi.json central-repo/microservices/${{ env.MICROSERVICE_NAME }}/openapi.json
 
-    - name: Commit and Push to Central Repository
-      working-directory: central-repo
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config user.name "GitHub Action"
-        git config user.email "action@github.com"
-        git add service1/swagger.json
-        git commit -m "Update Swagger for Service 1"
-        git push origin main
+    # Step 4: Commit and push the changes to the central repository.
+    - name: Commit and Push Changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Update Swagger for ${{ env.MICROSERVICE_NAME }} [Automated]"
+        branch: main
+        file_pattern: |
+          central-repo/microservices/${{ env.MICROSERVICE_NAME }}/openapi.json
