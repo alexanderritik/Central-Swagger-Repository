@@ -112,7 +112,7 @@ Add this snippet to your microservice's CI pipeline to automatically push Swagge
 | PDF Export | ✅ | < 3s |
 
 ### 🏆 Benchmark
-Our repository smoothly handles **500+ microservice specs concurrently** without breaking a sweat, ensuring you have reliable access to documentation at any scale.
+Our repository smoothly handles **100+ microservice specs concurrently** without breaking a sweat, ensuring you have reliable access to documentation at any scale.
 
 
 <p align="center">Made with ❤️ by the Ritik</p>
